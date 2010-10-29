@@ -3,7 +3,7 @@
 include_once(ANTHOLOGIZE_TEIDOM_PATH);
 include_once(ANTHOLOGIZE_TEIDOMAPI_PATH);
 include_once('class-nanowrimo-anthologizer.php');
-include_once(WP_PLUGIN_DIR . '/anthologize/templates/epub/class-epub-builder.php');
+include_once(WP_PLUGIN_DIR . '/nanowrimo/includes/class-epub-builder.php');
 
 global $tocDOM;
 
