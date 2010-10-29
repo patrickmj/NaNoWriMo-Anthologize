@@ -121,14 +121,33 @@ class NaNoWriMoHTMLer extends NaNoWriMoAnthologizer {
 		$anth->setAttribute('class', 'anth-badge');
 		$projectTitle = $this->api->getProjectTitle(true);
 		$titleH = $this->output->createElement('h1', $projectTitle);
-
+		$subtitleH = $this->output->createElement('h2', $this->api->getProjectSubTitle(true));
+		$subtitleH->setAttribute('class', 'subtitle');
 
 		$titleContainer->appendChild($badge);
 		$titleContainer->appendChild($anth);
 		$titleContainer->appendChild($titleH);
+		$titleContainer->appendChild($subtitleH);
 		$frontNode->appendChild($titleContainer);
-		$frontNode->appendChild($this->writeTOC());
 
+		$cr = $this->api->getProjectCopyright();
+//TODO: fix this in api
+		$cr = substr($cr, 43, -7);
+
+		$frontNode->appendChild($this->output->createElement('p', $cr . " 2010"));
+
+
+		//dedication
+		$ded = $this->api->getSectionPartItemContent('front', 0, 0, true);
+		$frontNode->appendChild($this->output->importNode($ded, true));
+		//acknowledgements
+		$ack = $this->api->getSectionPartItemContent('front', 0, 1, true);
+
+		$frontNode->appendChild($this->output->importNode($ack, true));
+
+
+
+		$frontNode->appendChild($this->writeTOC());
 	}
 
 	public function appendBody() {

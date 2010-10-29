@@ -30,7 +30,6 @@ $api = new TeiApi($tei);
 
 $htmler = new NaNoWriMoHTMLer($api, true);
 
-//TODO
 
 $epub = new EpubBuilder($tei, $htmler->output);
 
