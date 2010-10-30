@@ -95,14 +95,42 @@ class NaNoWriMoHTMLer extends NaNoWriMoAnthologizer {
 
 		//we'll be building the HTML as a DOMDocument
 		$this->output = new DOMDocument();
-		$html = "<html><head><title></title>";
+		$fontFamily = $this->api->getProjectOutputParams('font-face');
+		$fontSize = $this->api->getProjectOutputParams('font-size');
+		$title = $this->api->getProjectTitle(true);
+		if($fontSize == '') {
+			$fontSize = "12pt";
+		}
+
+		$html = "<html><head><title>$title</title>
+
+				";
 		$html .= "<style type='text/css'>
-				div.title-container {text-align: center;}
-				ul, li {list-style: none;}
+
+					@page {margin: 3cm }
+					body {
+						font-family:$fontFamily;
+					  	font-size :$fontSize;
+
+					}
+
+				";
 
 
-					";
+
+		$css = "body {font-family: $fontFamily ;
+					  font-size : $fontSize ;
+
+				}\n";
+		$css .=  "div.title-container {text-align: center; }\n";
+		$css .= "ul, li {list-style: none;}\n";
+
+		//$html .= $css;
+		$html .= "</style>";
+		//echo $html;
+		//die();
 		$html .= "</head><body><div id='front'></div><div id='body'></body></html>";
+
 		$this->output->loadHTML($html);
 		$this->xpath = new DOMXPath($this->output);
 		$this->badgeURL = WP_PLUGIN_URL .  "/nanowrimo/images/nanowrimo_participant_09_120x240.png";
@@ -132,9 +160,15 @@ class NaNoWriMoHTMLer extends NaNoWriMoAnthologizer {
 
 		$cr = $this->api->getProjectCopyright();
 //TODO: fix this in api
+//api returns text span
+//this substrings just the content
 		$cr = substr($cr, 43, -7);
 
-		$frontNode->appendChild($this->output->createElement('p', $cr . " 2010"));
+		$creator = $this->api->getProjectCreator();
+		$creator = substr($creator, 43, -7);
+
+		$frontNode->appendChild($this->output->createElement('p', $creator));
+		$frontNode->appendChild($this->output->createElement('p', $cr . ", 2010"));
 
 
 		//dedication
@@ -144,8 +178,6 @@ class NaNoWriMoHTMLer extends NaNoWriMoAnthologizer {
 		$ack = $this->api->getSectionPartItemContent('front', 0, 1, true);
 
 		$frontNode->appendChild($this->output->importNode($ack, true));
-
-
 
 		$frontNode->appendChild($this->writeTOC());
 	}
@@ -202,14 +234,19 @@ class NaNoWriMoHTMLer extends NaNoWriMoAnthologizer {
 		$titleH->setAttribute('class', 'item-title');
 		$title = $this->output->importNode($this->api->getSectionPartItemTitle($section, $partN, $itemN, true), true );
 		$titleH->appendChild($title->firstChild);
-
-		$wordCount = $this->countItemWords($this->api->getSectionPartItemContent($section, $partN, $itemN));
-		$this->totalWords = $this->totalWords + $wordCount;
-		$wcP = $this->output->createElement('p', "About $wordCount words");
-
-
 		$itemHeaderDiv->appendChild($titleH);
-		$itemHeaderDiv->appendChild($wcP);
+
+		if( ($this->api->getProjectOutputParams('item-count') == 'on') ||
+				($this->api->getProjectOutputParams('total-count') == 'on') ) {
+					$wordCount = $this->countItemWords($this->api->getSectionPartItemContent($section, $partN, $itemN));
+					$this->totalWords = $this->totalWords + $wordCount;
+				}
+
+		if($this->api->getProjectOutputParams('item-count') == 'on') {
+			$wcP = $this->output->createElement('p', "About $wordCount words");
+			$itemHeaderDiv->appendChild($wcP);
+		}
+
 		return $itemHeaderDiv;
 	}
 
@@ -249,17 +286,19 @@ class NaNoWriMoHTMLer extends NaNoWriMoAnthologizer {
 				$itemLI->appendChild($itemTitleH);
 				$itemsUL->appendChild($itemLI);
 			}
-		$partsUL->appendChild($partLI);
+			$partsUL->appendChild($partLI);
 		}
 		$tocDiv->appendChild($partsUL);
 		return $tocDiv;
 	}
 
 	public function finish() {
-		$frontNode = $this->xpath->query("//div[@id='front']")->item(0);
-		//$item = $frontNode->childNodes->item(0);
-		$words = $this->output->createElement('p', "About " . $this->totalWords . " words");
-		$frontNode->firstChild->appendChild($words);
+		if ( $this->api->getProjectOutputParams('total-count') == 'on') {
+			$frontNode = $this->xpath->query("//div[@id='front']")->item(0);
+			$words = $this->output->createElement('p', "About " . $this->totalWords . " words");
+			$frontNode->firstChild->appendChild($words);
+		}
+
 
 	}
 }

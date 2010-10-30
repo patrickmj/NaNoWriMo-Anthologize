@@ -228,7 +228,7 @@ class EpubBuilder {
 	    }
 
 	 header("Content-type: application/epub+zip");
-	 //header("Content-Disposition: attachment; filename=" . $this->outFileName);
+	 header("Content-Disposition: attachment; filename=" . $this->outFileName);
 	 header("Pragma: no-cache");
 	 header("Expires: 0");
 

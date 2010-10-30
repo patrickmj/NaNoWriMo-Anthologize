@@ -27,21 +27,15 @@ $ops['outputParams'] = $_SESSION['outputParams'];
 $tei = new TeiDom($_SESSION, $ops);
 $api = new TeiApi($tei);
 
-
 $htmler = new NaNoWriMoHTMLer($api, true);
-
 
 $epub = new EpubBuilder($tei, $htmler->output);
 
-//TODO: hack the toc.ncx file epub writes to make it conform to the ids produced.
-
+//Hack the toc.ncx file epub writes to make it conform to the ids produced.
 $tocDOM = new DOMDocument();
-
 $tocDOM->load($epub->oebpsDir . "toc.ncx");
-
 rewriteTOC($htmler->output);
 $tocDOM->save($epub->oebpsDir . "toc.ncx");
-
 $epub->output();
 
 function rewriteTOC($htmlDOM) {
@@ -96,112 +90,3 @@ function newNavPoint($id, $label) {
 
 die();
 
-
-?>
-
-<html>
-	<head>
-		<title><?php echo $api->getProjectTitle(true); ?></title>
-	</head>
-	<style type='text/css'>
-
-		body {
-			font-size: <?php echo $api->getProjectOutputParams('font-size'); ?>;
-		}
-
-
-		.anth-index-item {
-			clear: both;
-		}
-
-		#anth-image-index img {
-			float: left;
-			margin: 10px;
-
-		}
-
-
-
-	</style>
-<body>
-
-
-<h1 class="anth-project-title"><?php echo $api->getProjectTitle(); ?></h1>
-<p class="anth-project-subtitle"><?php echo $api->getProjectSubTitle(); ?></p>
-
-<p>Copyright</p>
-<?php echo $api->getProjectCopyright(); ?>
-
-<p>Edition</p>
-
-<?php echo $api->getProjectEdition(); ?>
-
-<p>Created</p>
-
-
-
-<p>Published</p>
-
-
-
-
-<p>Anthologizer: <?php echo $api->getProjectCreator(); ?> </p>
-
-<?php
-//passing true to getProjectCreator gets an array of additional data about the creator
-$curator = $api->getProjectCreator(true);
-?>
-
-<p>About the anthologizer:</p>
-<img src="<?php echo $api->getPersonDetail($curator, 'gravatarUrl'); ?>" />
-
-<?php
-//getPersonDetail helps you navigate that array to the info you want
-echo $api->getPersonDetail($curator, 'bio');
-
-?>
-
-
-<?php echo $api->getProjectCopyright(); ?>
-
-<?php echo $api->getProjectEdition(); ?>
-
-<h2><?php echo $api->getSectionPartItemTitle('front', 0, 0); ?></h2>
-<?php echo $api->getSectionPartItemContent('front', 0, 0); ?>
-
-
-<h2><?php echo $api->getSectionPartItemTitle('front', 0, 1); ?></h2>
-<?php echo $api->getSectionPartItemContent('front', 0, 1); ?>
-
-
-<?php for($i = 0; $i < $api->getSectionPartCount('body');  $i++): ?>
-	<div class="anth-part" id="<?php echo $api->getSectionPartId('body', $i); ?>">
-		<h2><?php echo $api->getSectionPartTitle('body', $i); ?></h2>
-		<?php for($j = 0; $j < $api->getSectionPartItemCount('body', $i); $j++): ?>
-			<div class="anth-item" id="<?php echo $api->getSectionPartItemId('body', $i, $j); ?>">
-				<h3><?php echo $api->getSectionPartItemTitle('body', $i, $j); ?></h3>
-				<?php
-					$by = $api->getSectionPartItemAnthAuthor('body', $i, $j);
-					if( ! $by) {
-						$by = $api->getSectionPartItemOriginalCreator('body', $i, $j);
-					}
-				?>
-				<p>By: <?php echo $by;  ?></p>
-				<p>Added to "<?php echo $api->getProjectTitle() ?>" by: <?php echo $api->getSectionPartItemCreator('body', $i, $j); ?></p>
-				<div class="anth-item-content">
-					<?php echo $api->getSectionPartItemContent('body', $i, $j); ?>
-				</div>
-			</div>
-		<?php endfor; ?>
-	</div>
-<?php endfor; ?>
-
-
-
-</body>
-
-</html>
-
-
-
-<?php die(); ?>
