@@ -1,12 +1,9 @@
 <?php
-
 /*
 Plugin Name: NaNoWriMo
 Description: Experiment / Demo theming Anthologize special for NaNoWriMo
 
 */
-require_once(WP_PLUGIN_DIR. '/anthologize/anthologize.php');
-require_once(WP_PLUGIN_DIR. '/anthologize/includes/class-format-api.php');
 
 //when in doubt, do what Boone does.
 //most all of this is copied from anthologize.php
@@ -17,19 +14,11 @@ if ( !class_exists( 'Nanowrimo_Loader' ) ) {
 
 		function nanowrimo_loader() {
 
-			$this->export_formats();
+			add_action( 'anthologize_init', array( $this, 'export_formats' ) );
 
-			// activation sequence
-			register_activation_hook( __FILE__, array( $this, 'activation' ) );
-
-			// deactivation sequence
-			register_deactivation_hook( __FILE__, array( $this, 'deactivation' ) );
 		}
 
-
-
 		function export_formats() {
-
 
 			anthologize_register_format( 'nano-epub', __( 'NaNoWriMo - ePub', 'anthologize' ), WP_PLUGIN_DIR . '/nanowrimo/epub-output.php' );
 			anthologize_register_format( 'nano-html', __( 'NaNoWriMo - HTML', 'anthologize' ), WP_PLUGIN_DIR . '/nanowrimo/html-output.php' );
@@ -56,15 +45,6 @@ if ( !class_exists( 'Nanowrimo_Loader' ) ) {
 			anthologize_register_format_option( 'nano-html', 'download', __('Download HTML?', 'anthologize'), 'checkbox');
 
 		}
-
-
-
-		function activation() {
-			require_once( dirname( __FILE__ ) . '/includes/class-activation.php' );
-			$activation = new Nanowrimo_Activation();
-		}
-
-		function deactivation() {}
 
 	}
 
