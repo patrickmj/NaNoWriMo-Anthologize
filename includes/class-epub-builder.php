@@ -102,9 +102,7 @@ class EpubBuilder {
 
 	public function createDirs() {
 
-		$this->tempDir = WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'anthologize'
-										. DIRECTORY_SEPARATOR . 'templates'
-										. DIRECTORY_SEPARATOR . 'epub'
+		$this->tempDir = WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'nanowrimo'
 										. DIRECTORY_SEPARATOR . 'temp'
 										. DIRECTORY_SEPARATOR
 										. sha1(microtime()) //make sure that if two users export different project from same site, they don't clobber each other
@@ -113,7 +111,9 @@ class EpubBuilder {
 		$this->epubDir = $this->tempDir  . 'epub' ;
 		$this->oebpsDir = $this->epubDir . DIRECTORY_SEPARATOR . 'OEBPS' . DIRECTORY_SEPARATOR;
 		$this->metaInfDir = $this->epubDir . DIRECTORY_SEPARATOR . 'META-INF' . DIRECTORY_SEPARATOR;
-
+echo $this->tempDir;
+echo "<br/>";
+		chmod(WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'nanowrimo' . DIRECTORY_SEPARATOR, 0777);
 		mkdir($this->tempDir, 0777, true);
 		mkdir($this->epubDir, 0777, true);
 		mkdir($this->oebpsDir, 0777, true);
