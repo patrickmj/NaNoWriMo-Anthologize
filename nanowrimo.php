@@ -17,9 +17,7 @@ if ( !class_exists( 'Nanowrimo_Loader' ) ) {
 
 		function nanowrimo_loader() {
 
-			add_action( 'init', array ( $this, 'init' ) );
-
-			add_action( 'nanowrimo_init', array( $this, 'export_formats' ) );
+			$this->export_formats();
 
 			// activation sequence
 			register_activation_hook( __FILE__, array( $this, 'activation' ) );
@@ -28,13 +26,10 @@ if ( !class_exists( 'Nanowrimo_Loader' ) ) {
 			register_deactivation_hook( __FILE__, array( $this, 'deactivation' ) );
 		}
 
-		function init() {
-			do_action( 'nanowrimo_init' );
-		}
 
 
 		function export_formats() {
-			global $anthologize_formats;
+
 
 			anthologize_register_format( 'nano-epub', __( 'NaNoWriMo - ePub', 'anthologize' ), WP_PLUGIN_DIR . '/nanowrimo/epub-output.php' );
 			anthologize_register_format( 'nano-html', __( 'NaNoWriMo - HTML', 'anthologize' ), WP_PLUGIN_DIR . '/nanowrimo/html-output.php' );
