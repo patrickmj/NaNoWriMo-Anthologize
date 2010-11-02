@@ -1,0 +1,16 @@
+INSTALLATION
+
+1. Make sure Anthologize is already installed http://anthologize.org
+
+2. Upload the plugin to the plugins folder the usual way
+
+3. Make sure the server has permission to create a temporary folder in the Nanowrimo folder. 
+If the permissions are set set correctly, you will see a message similar to this when you try to activate the plugin:
+
+The plugin generated 230 characters of unexpected output during activation. If you notice “headers already sent” messages, problems with syndication feeds or other issues, try deactivating or removing this plugin.
+
+4. Activate the plugin from the WP plugins page
+
+5. MAKE SURE TO CHANGE THE PERMISSIONS ON THE NANOWRIMO FOLDER TO RESTRICT WRITE OPERATIONS!!! Not doing so introduces a security hole an Imperial Destroyer could fly through. And one probably will.
+
+

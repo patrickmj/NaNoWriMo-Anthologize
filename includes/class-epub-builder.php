@@ -111,9 +111,8 @@ class EpubBuilder {
 		$this->epubDir = $this->tempDir  . 'epub' ;
 		$this->oebpsDir = $this->epubDir . DIRECTORY_SEPARATOR . 'OEBPS' . DIRECTORY_SEPARATOR;
 		$this->metaInfDir = $this->epubDir . DIRECTORY_SEPARATOR . 'META-INF' . DIRECTORY_SEPARATOR;
-echo $this->tempDir;
-echo "<br/>";
-		chmod(WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'nanowrimo' . DIRECTORY_SEPARATOR, 0777);
+
+
 		mkdir($this->tempDir, 0777, true);
 		mkdir($this->epubDir, 0777, true);
 		mkdir($this->oebpsDir, 0777, true);
@@ -196,6 +195,12 @@ echo "<br/>";
 	      // ZLib extension code
 
 	      elseif (extension_loaded('zlib') === true) {
+
+			$anth_pear_ext_path = WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'anthologize' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'epub' . DIRECTORY_SEPARATOR . 'pear_ext';
+
+			set_include_path(get_include_path() . PATH_SEPARATOR . $anth_pear_ext_path);
+
+			require_once( 'Archive.php' );
 
 	        $original_dir = getcwd(); // Remember CWD for later reset
 	        chdir($source);           // Set CWD to temp area

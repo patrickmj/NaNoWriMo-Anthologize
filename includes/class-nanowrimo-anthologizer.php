@@ -114,6 +114,12 @@ class NaNoWriMoHTMLer extends NaNoWriMoAnthologizer {
 
 					}
 
+					.part {
+						page-break-before: always;
+					}
+					.item {
+						page-break-before: always;
+					}
 				";
 
 

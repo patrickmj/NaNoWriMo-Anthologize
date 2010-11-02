@@ -5,6 +5,28 @@ Description: Experiment / Demo theming Anthologize special for NaNoWriMo
 
 */
 
+
+
+/*
+Copyright (C) 2010 Patrick Murray-John
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+more details.
+
+You should have received a copy of the GNU General Public License along with
+this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
+
+
 //when in doubt, do what Boone does.
 //most all of this is copied from anthologize.php
 
@@ -16,6 +38,8 @@ if ( !class_exists( 'Nanowrimo_Loader' ) ) {
 
 			add_action( 'anthologize_init', array( $this, 'export_formats' ) );
 
+			// activation sequence
+			register_activation_hook( __FILE__, array( $this, 'activation' ) );
 		}
 
 		function export_formats() {
@@ -44,6 +68,11 @@ if ( !class_exists( 'Nanowrimo_Loader' ) ) {
 			anthologize_register_format_option( 'nano-html', 'font-size', __( 'Font Size', 'anthologize' ), 'dropdown', $fontSizes, '14pt' );
 			anthologize_register_format_option( 'nano-html', 'download', __('Download HTML?', 'anthologize'), 'checkbox');
 
+		}
+
+		function activation() {
+			require_once( dirname( __FILE__ ) . '/includes/class-activation.php' );
+			$activation = new Nanowrimo_Activation();
 		}
 
 	}
