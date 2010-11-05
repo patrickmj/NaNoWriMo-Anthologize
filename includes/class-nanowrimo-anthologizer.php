@@ -111,7 +111,6 @@ class NaNoWriMoHTMLer extends NaNoWriMoAnthologizer {
 					body {
 						font-family:$fontFamily;
 					  	font-size :$fontSize;
-
 					}
 
 					.part {
@@ -120,18 +119,24 @@ class NaNoWriMoHTMLer extends NaNoWriMoAnthologizer {
 					.item {
 						page-break-before: always;
 					}
-				";
+
+					.item-word-count {
+						margin: 5px;
+						font-style: italic;
+					}
+
+					.total-word-count {
+						margin: 5px;
+						font-style: italic;
+
+					}
+
+
+						";
 
 
 
-		$css = "body {font-family: $fontFamily ;
-					  font-size : $fontSize ;
 
-				}\n";
-		$css .=  "div.title-container {text-align: center; }\n";
-		$css .= "ul, li {list-style: none;}\n";
-
-		//$html .= $css;
 		$html .= "</style>";
 		//echo $html;
 		//die();
@@ -217,7 +222,9 @@ class NaNoWriMoHTMLer extends NaNoWriMoAnthologizer {
 	}
 
 	public function output() {
-		return $this->output->saveHTML();
+		$html = $this->output->saveHTML();
+		$html = str_replace('&nbsp;', ' ', $html);
+		return $html;
 	}
 
 	public function writePartHead($section, $partN) {
@@ -250,6 +257,7 @@ class NaNoWriMoHTMLer extends NaNoWriMoAnthologizer {
 
 		if($this->api->getProjectOutputParams('item-count') == 'on') {
 			$wcP = $this->output->createElement('p', "About $wordCount words");
+			$wcP->setAttribute('class', 'item-word-count');
 			$itemHeaderDiv->appendChild($wcP);
 		}
 
@@ -257,6 +265,7 @@ class NaNoWriMoHTMLer extends NaNoWriMoAnthologizer {
 	}
 
 	public function writeItemContent($section, $partN, $itemN) {
+
 		$contentDiv = $this->output->importNode($this->api->getSectionPartItemContent($section, $partN, $itemN, true), true);
 		return $contentDiv;
 	}
@@ -302,11 +311,11 @@ class NaNoWriMoHTMLer extends NaNoWriMoAnthologizer {
 		if ( $this->api->getProjectOutputParams('total-count') == 'on') {
 			$frontNode = $this->xpath->query("//div[@id='front']")->item(0);
 			$words = $this->output->createElement('p', "About " . $this->totalWords . " words");
+			$words->setAttribute('class', 'total-word-count');
 			$frontNode->firstChild->appendChild($words);
 		}
-
-
 	}
+
 }
 
 

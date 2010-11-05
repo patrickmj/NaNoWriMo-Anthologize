@@ -137,6 +137,22 @@ class EpubBuilder {
 
 	public function saveOPF() {
 		$opf = $this->doProc($this->opfXSL, $this->tei);
+		// overwrite the bad metadata
+		//TODO address this in the core xsl
+		$xpath = new DOMXPath($opf);
+		$xpath->registerNamespace('dc', 'http://purl.org/dc/elements/1.1/');
+		$titleNode = $xpath->query("//dc:title")->item(0);
+		$teiXPath = new DOMXPath($this->tei);
+		$teiXPath->registerNamespace('tei', 'http://www.tei-c.org/ns/1.0');
+		$teiTitleNL = $teiXPath->query("//tei:front/tei:head/tei:bibl/tei:title[@type='main']");
+		$teiTitle = $teiTitleNL->item(0);
+
+		$titleNode->nodeValue = trim($teiTitle->nodeValue);
+		$teiCreatorNode = $teiXPath->query("//tei:front/tei:head/tei:bibl/tei:author[@role='projectCreator']")->item(0);
+
+		$creatorNode = $xpath->query("//dc:creator")->item(0);
+		$creatorNode->nodeValue = trim($teiCreatorNode->nodeValue);
+
 		$opf->save($this->oebpsDir . 'book.opf');
 	}
 
